@@ -1,5 +1,5 @@
 # Flyme2sky
-A macro to make characters in Genshin stay in a special state / 4.0+飞天Bug快捷操作
+A macro to make characters in Genshin stay in a special state / 原神4.0+飞天Bug快捷操作
 
 ### Usage Method/使用方法
 安装依赖并以管理员身份运行```run.bat```。之后打开游戏，站在固定的、可以在后续操作中施加向上的速度的地面，按```f11```运行程序。

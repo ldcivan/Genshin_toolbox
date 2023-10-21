@@ -1,5 +1,5 @@
 @echo off
-title GenshinHolder
+title GenshinAssistant
 mode con: cols=50 lines=10
 set curdir=%~dp0
 cd /d %curdir%

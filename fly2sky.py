@@ -4,6 +4,7 @@ import pydirectinput
 import locale
 import time
 from screeninfo import get_monitors
+import pymsgbox
 
 
 def is_chinese_language():
@@ -15,11 +16,6 @@ def is_chinese_language():
 
 
 is_chinese = is_chinese_language()
-
-if is_chinese:
-    print("主界面中：f11-自动卡飞行bug，f10-自动对话，f12-退出程序")
-else:
-    print("Press f11 to fly, f10 for auto dialogue, f12 to exit")
 
 
 def click_pic(icon_path):
@@ -47,6 +43,14 @@ def get_screen_resolution():
         return None
 
 
+mainLoop = True
+
+
+def actively_exit():
+    global mainLoop
+    mainLoop = False
+
+
 # 调用函数获取屏幕分辨率
 resolution = get_screen_resolution()
 if resolution:
@@ -59,6 +63,7 @@ else:
 
 
 def fly():
+    pymsgbox.alert('自动飞天将开始/start fly')
     print("自动飞天开始/start fly")
     time.sleep(0.5)
     pyautogui.press('esc')
@@ -95,7 +100,9 @@ def talk_switcher():
     if talking:
         talking = False
         print('对话模式终止/stop talk')
+        pymsgbox.alert('对话模式终止/stop talk')
     else:
+        pymsgbox.alert('对话将模式开始/start talk')
         talking = True
         print('对话模式开始/start talk')
 
@@ -119,17 +126,20 @@ def talk():
 
 Neuvilletteing = False
 
-def Neuvillette_switcher():
+
+def neuv_switcher():
     global Neuvilletteing
     if Neuvilletteing:
         Neuvilletteing = False
         print('Neuv模式终止/stop Neuv')
+        pymsgbox.alert('Neuv模式终止/stop Neuv')
     else:
+        pymsgbox.alert('Neuv模式开始/start Neuv')
         Neuvilletteing = True
-        print('Neuv模式开始/start Neuv')
+        print('Neuv模式将开始/start Neuv')
 
 
-def Neuvillette():
+def neuv():
     global Neuvilletteing
     if Neuvilletteing:
         if pyautogui.locateOnScreen('./src/NeuvQ.png', confidence=0.80) is not None:
@@ -160,7 +170,43 @@ def Neuvillette():
             i = i + 1
 
         pyautogui.mouseUp(button='left')
+        pyautogui.keyDown('w')
+        time.sleep(0.7)
+        pyautogui.keyUp('w')
 
+
+gathering = False
+
+
+def gather_switcher():
+    global gathering
+    if gathering:
+        gathering = False
+        print('采集模式终止/stop gather')
+        pymsgbox.alert('采集模式终止/stop gather')
+    else:
+        pymsgbox.alert('采集模式开始/start gather')
+        gathering = True
+        print('采集模式将开始/start gather')
+
+
+def gather():
+    global gathering
+    if gathering:
+        while True:
+            target1_position = pyautogui.locateOnScreen('./src/talk_select.png', confidence=0.80)
+            target2_position = pyautogui.locateOnScreen('./src/gear.png', confidence=0.80)
+            target3_position = pyautogui.locateOnScreen('./src/F.png', confidence=0.80)
+            if target1_position is None and target2_position is None and target3_position is not None:
+                pyautogui.press('f')
+                pyautogui.press('f')
+                pyautogui.press('f')
+            else:
+                break
+
+
+# 注册按键事件处理函数
+keyboard.add_hotkey('f12', actively_exit)
 
 # 注册按键组合 f11 飞
 keyboard.add_hotkey('f11', fly)
@@ -171,19 +217,22 @@ keyboard.add_hotkey('f10', talk_switcher)
 print('Auto dialogue...OK ')
 
 # 注册按键事件处理函数
-keyboard.add_hotkey('f9', Neuvillette_switcher)
+keyboard.add_hotkey('f9', neuv_switcher)
 print('Neuvillette rolling...OK ')
 
+# 注册按键事件处理函数
+keyboard.add_hotkey('f8', gather_switcher)
+print('Auto gathering...OK ')
+
+print('----说明|Instruction----')
+if is_chinese:
+    print("主界面中：f11-自动卡飞行bug，f10-自动对话，f9-那维莱特自律，f8-自动采集，f12-退出/重启程序")
+else:
+    print("Press f11 to fly, f10 for auto dialogue, f9 for auto Neuv, f8 for auto gathering, f12 to exit/restart")
+
 # 循环执行程序
-while True:
+while mainLoop:
     talk()
-    Neuvillette()
-    time.sleep(1)
-
-# 监听按键事件
-keyboard.wait('f12')
-
-
-
-
-
+    neuv()
+    gather()
+    time.sleep(0.1)

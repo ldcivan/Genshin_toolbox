@@ -4,7 +4,7 @@ import pydirectinput
 import locale
 import time
 from screeninfo import get_monitors
-import pymsgbox
+import tkinter as tk
 
 
 def is_chinese_language():
@@ -43,6 +43,43 @@ def get_screen_resolution():
         return None
 
 
+def alert(content_text):
+    # 创建顶层窗口
+    window = tk.Toplevel()
+
+    # 设置窗口属性
+    window.overrideredirect(True)  # 移除窗口边框
+    window.attributes('-alpha', 0.8)  # 设置窗口透明度
+    window.attributes("-topmost", True)  # 置顶窗口
+
+    # 获取屏幕尺寸
+    tkscreen_width = window.winfo_screenwidth()
+    tkscreen_height = window.winfo_screenheight()
+
+    # 设置窗口大小和位置
+    window_width = 450
+    window_height = 120
+    x = (tkscreen_width - window_width) // 2
+    y = 75
+    window.geometry(f"{window_width}x{window_height}+{x}+{y}")
+
+    # 创建标签
+    label = tk.Label(window, text=content_text, fg="white", bg="black", font=("汉仪文黑", 16, 'bold'))
+    label.pack(fill=tk.BOTH, expand=True)
+
+    # 设置定时器，3秒后关闭窗口
+    window.after(2000, close_window, window)
+
+    # 显示窗口
+    window.deiconify()
+    window.mainloop()
+
+
+def close_window(window):
+    window.withdraw()  # 隐藏窗口
+    window.quit()  # 销毁窗口对象
+
+
 mainLoop = True
 
 
@@ -63,11 +100,11 @@ else:
 
 
 def fly():
-    pymsgbox.alert('自动飞天将开始/start fly')
+    alert('自动飞天将开始/start fly')
     print("自动飞天开始/start fly")
     time.sleep(0.5)
     pyautogui.press('esc')
-    time.sleep(0.7)
+    time.sleep(0.75)
     click_pic('./src/photo.png')
 
     time.sleep(0.5)
@@ -100,9 +137,9 @@ def talk_switcher():
     if talking:
         talking = False
         print('对话模式终止/stop talk')
-        pymsgbox.alert('对话模式终止/stop talk')
+        alert('对话模式终止/stop talk')
     else:
-        pymsgbox.alert('对话将模式开始/start talk')
+        alert('对话模式将开始/start talk')
         talking = True
         print('对话模式开始/start talk')
 
@@ -124,6 +161,15 @@ def talk():
             print('未探测到对话/No dialogue detect.')
 
 
+
+def rollingneuv():
+    i = 0
+    pydirectinput.moveRel(0, 200, duration=0.1, relative=True)
+    while i < 27:
+        pydirectinput.moveRel(1500, 0, duration=0.1, relative=True)
+        i = i + 1
+
+
 Neuvilletteing = False
 
 
@@ -131,12 +177,12 @@ def neuv_switcher():
     global Neuvilletteing
     if Neuvilletteing:
         Neuvilletteing = False
-        print('Neuv模式终止/stop Neuv')
-        pymsgbox.alert('Neuv模式终止/stop Neuv')
+        print('Neuv自律模式终止/stop auto Neuv')
+        alert('Neuv自律模式终止/stop auto Neuv')
     else:
-        pymsgbox.alert('Neuv模式开始/start Neuv')
+        alert('Neuv自律模式开始/start auto Neuv')
         Neuvilletteing = True
-        print('Neuv模式将开始/start Neuv')
+        print('Neuv自律模式将开始/start auto Neuv')
 
 
 def neuv():
@@ -183,9 +229,9 @@ def gather_switcher():
     if gathering:
         gathering = False
         print('采集模式终止/stop gather')
-        pymsgbox.alert('采集模式终止/stop gather')
+        alert('采集模式终止/stop gather')
     else:
-        pymsgbox.alert('采集模式开始/start gather')
+        alert('采集模式开始/start gather')
         gathering = True
         print('采集模式将开始/start gather')
 
@@ -194,9 +240,9 @@ def gather():
     global gathering
     if gathering:
         while True:
-            target1_position = pyautogui.locateOnScreen('./src/talk_select.png', confidence=0.80)
-            target2_position = pyautogui.locateOnScreen('./src/gear.png', confidence=0.80)
             target3_position = pyautogui.locateOnScreen('./src/F.png', confidence=0.80)
+            target1_position = pyautogui.locateOnScreen('./src/talk.png', confidence=0.80)
+            target2_position = pyautogui.locateOnScreen('./src/gear.png', confidence=0.80)
             if target1_position is None and target2_position is None and target3_position is not None:
                 pyautogui.press('f')
                 pyautogui.press('f')
@@ -217,8 +263,9 @@ keyboard.add_hotkey('f10', talk_switcher)
 print('Auto dialogue...OK ')
 
 # 注册按键事件处理函数
-keyboard.add_hotkey('f9', neuv_switcher)
-print('Neuvillette rolling...OK ')
+keyboard.add_hotkey('ctrl+f9', neuv_switcher)
+keyboard.add_hotkey('f9', rollingneuv)
+print('Auto & rolling Neuvillette...OK ')
 
 # 注册按键事件处理函数
 keyboard.add_hotkey('f8', gather_switcher)
@@ -236,3 +283,4 @@ while mainLoop:
     neuv()
     gather()
     time.sleep(0.1)
+print('exited')

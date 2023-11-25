@@ -146,18 +146,24 @@ def talk_switcher():
 
 def talk():
     if talking:
-        talk_select_position = pyautogui.locateOnScreen('./src/talk_select.png', confidence=0.8,
-                                                        region=(0.5*screen_width, 0.5*screen_height, screen_width, screen_height))
-        close_position = pyautogui.locateOnScreen('./src/X.png', confidence=0.8,
-                                                  region=(screen_width-400, 0, screen_width, 400))
-        auto_position = pyautogui.locateOnScreen('./src/auto.png', confidence=0.8,
-                                                 region=(0, 0, 400, 400))
-        black = pyautogui.locateOnScreen('./src/black.png', confidence=0.8,
-                                         region=(0, 0.75*screen_height, screen_width, screen_height))
+        # 获取整个屏幕截图
+        screen_image = pyautogui.screenshot()
+        # 指定区域并使用截图进行图像匹配
+        talk_select_position = pyautogui.locate('./src/talk_select.png', screen_image, confidence=0.8,
+                                                region=(int(0.5 * screen_width), int(0.5 * screen_height), screen_width, screen_height))
+        close_position = pyautogui.locate('./src/X.png', screen_image, confidence=0.8,
+                                          region=(screen_width - 400, 0, screen_width, 400))
+        auto_position = pyautogui.locate('./src/auto.png', screen_image, confidence=0.8,
+                                         region=(0, 0, 400, 400))
+        black = pyautogui.locate('./src/black.png', screen_image, confidence=0.8,
+                                 region=(0, int(0.75 * screen_height), screen_width, screen_height))
+        location_icon = pyautogui.locate('./src/location_icon.png', screen_image, confidence=0.8,
+                                         region=(int(0.5*screen_width), 0, screen_width, int(0.25 * screen_height)))
+
         if talk_select_position is not None:
             talk_select_center = pyautogui.center(talk_select_position)
             pyautogui.click(talk_select_center.x, talk_select_center.y)
-        elif close_position is not None:
+        elif close_position is not None and location_icon is None:
             close_center = pyautogui.center(close_position)
             pyautogui.click(close_center.x, close_center.y)
         elif auto_position is not None or black is not None:

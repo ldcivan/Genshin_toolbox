@@ -146,16 +146,21 @@ def talk_switcher():
 
 def talk():
     if talking:
-        talk_select_position = pyautogui.locateOnScreen('./src/talk_select.png', confidence=0.8)
-        close_position = pyautogui.locateOnScreen('./src/X.png', confidence=0.8)
-        auto_position = pyautogui.locateOnScreen('./src/auto.png', confidence=0.8)
-        if talk_select_position is not None and auto_position is not None:
+        talk_select_position = pyautogui.locateOnScreen('./src/talk_select.png', confidence=0.8,
+                                                        region=(0.5*screen_width, 0.5*screen_height, screen_width, screen_height))
+        close_position = pyautogui.locateOnScreen('./src/X.png', confidence=0.8,
+                                                  region=(screen_width-400, 0, screen_width, 400))
+        auto_position = pyautogui.locateOnScreen('./src/auto.png', confidence=0.8,
+                                                 region=(0, 0, 400, 400))
+        black = pyautogui.locateOnScreen('./src/black.png', confidence=0.8,
+                                         region=(0, 0.75*screen_height, screen_width, screen_height))
+        if talk_select_position is not None:
             talk_select_center = pyautogui.center(talk_select_position)
             pyautogui.click(talk_select_center.x, talk_select_center.y)
         elif close_position is not None:
             close_center = pyautogui.center(close_position)
             pyautogui.click(close_center.x, close_center.y)
-        elif auto_position is not None:
+        elif auto_position is not None or black is not None:
             pyautogui.click(screen_width/2, screen_height/2)
         else:
             print('未探测到对话/No dialogue detect.')
@@ -188,11 +193,13 @@ def neuv_switcher():
 def neuv():
     global Neuvilletteing
     if Neuvilletteing:
-        if pyautogui.locateOnScreen('./src/NeuvQ.png', confidence=0.80) is not None:
+        if pyautogui.locateOnScreen('./src/NeuvQ.png', confidence=0.80,
+                                    region=(screen_width-490, screen_height-180, screen_width, screen_height)) is not None:
             print('Neuv Q')
             pyautogui.press('q')
             time.sleep(2.8)
-        if pyautogui.locateOnScreen('./src/NeuvE.png', confidence=0.80) is not None:
+        if pyautogui.locateOnScreen('./src/NeuvE.png', confidence=0.80,
+                                    region=(screen_width-490, screen_height-180, screen_width, screen_height)) is not None:
             print('Neuv E')
             pyautogui.press('e')
             time.sleep(0.7)
@@ -240,9 +247,12 @@ def gather():
     global gathering
     if gathering:
         while True:
-            target3_position = pyautogui.locateOnScreen('./src/F.png', confidence=0.80)
-            target1_position = pyautogui.locateOnScreen('./src/talk.png', confidence=0.80)
-            target2_position = pyautogui.locateOnScreen('./src/gear.png', confidence=0.80)
+            target3_position = pyautogui.locateOnScreen('./src/F.png', confidence=0.80,
+                                                        region=(0.45*screen_width, 0.3*screen_height-180, 0.7*screen_width, 0.7*screen_height))
+            target1_position = pyautogui.locateOnScreen('./src/talk.png', confidence=0.80,
+                                                        region=(0.45*screen_width, 0.3*screen_height-180, 0.7*screen_width, 0.7*screen_height))
+            target2_position = pyautogui.locateOnScreen('./src/gear.png', confidence=0.80,
+                                                        region=(0.45*screen_width, 0.3*screen_height-180, 0.7*screen_width, 0.7*screen_height))
             if target1_position is None and target2_position is None and target3_position is not None:
                 pyautogui.press('f')
                 pyautogui.press('f')

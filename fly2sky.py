@@ -151,19 +151,21 @@ def talk():
         # 指定区域并使用截图进行图像匹配
         talk_select_position = pyautogui.locate('./src/talk_select.png', screen_image, confidence=0.8,
                                                 region=(int(0.5 * screen_width), int(0.5 * screen_height), screen_width, screen_height))
-        close_position = pyautogui.locate('./src/X.png', screen_image, confidence=0.8,
-                                          region=(screen_width - 400, 0, screen_width, 400))
+        close_position = pyautogui.locate('./src/X.png', screen_image, confidence=0.90,
+                                          region=(screen_width - 400, 0, screen_width, 200))
         auto_position = pyautogui.locate('./src/auto.png', screen_image, confidence=0.8,
                                          region=(0, 0, 400, 400))
         black = pyautogui.locate('./src/black.png', screen_image, confidence=0.8,
                                  region=(0, int(0.75 * screen_height), screen_width, screen_height))
-        location_icon = pyautogui.locate('./src/location_icon.png', screen_image, confidence=0.8,
-                                         region=(int(0.5*screen_width), 0, screen_width, int(0.25 * screen_height)))
+        location_icon = pyautogui.locate('./src/location_icon.png', screen_image, confidence=0.7,
+                                         region=(int(0.7*screen_width), 0, screen_width, 200))
+        domain = pyautogui.locate('./src/domain.png', screen_image, confidence=0.7,
+                                  region=(int(0.7*screen_width), 0, screen_width, screen_height))
 
         if talk_select_position is not None:
             talk_select_center = pyautogui.center(talk_select_position)
             pyautogui.click(talk_select_center.x, talk_select_center.y)
-        elif close_position is not None and location_icon is None:
+        elif close_position is not None and location_icon is None and domain is None:
             close_center = pyautogui.center(close_position)
             pyautogui.click(close_center.x, close_center.y)
         elif auto_position is not None or black is not None:
@@ -253,12 +255,13 @@ def gather():
     global gathering
     if gathering:
         while True:
-            target3_position = pyautogui.locateOnScreen('./src/F.png', confidence=0.80,
-                                                        region=(0.45*screen_width, 0.3*screen_height-180, 0.7*screen_width, 0.7*screen_height))
-            target1_position = pyautogui.locateOnScreen('./src/talk.png', confidence=0.80,
-                                                        region=(0.45*screen_width, 0.3*screen_height-180, 0.7*screen_width, 0.7*screen_height))
-            target2_position = pyautogui.locateOnScreen('./src/gear.png', confidence=0.80,
-                                                        region=(0.45*screen_width, 0.3*screen_height-180, 0.7*screen_width, 0.7*screen_height))
+            screen_image = pyautogui.screenshot()
+            target3_position = pyautogui.locate('./src/F.png', screen_image, confidence=0.80,
+                                                region=(int(0.45*screen_width), int(0.3*screen_height-180), int(0.7*screen_width), int(0.7*screen_height)))
+            target1_position = pyautogui.locate('./src/talk.png', screen_image, confidence=0.80,
+                                                region=(int(0.45*screen_width), int(0.3*screen_height-180), int(0.7*screen_width), int(0.7*screen_height)))
+            target2_position = pyautogui.locate('./src/gear.png', screen_image, confidence=0.80,
+                                                region=(int(0.45*screen_width), int(0.3*screen_height-180), int(0.7*screen_width), int(0.7*screen_height)))
             if target1_position is None and target2_position is None and target3_position is not None:
                 pyautogui.press('f')
                 pyautogui.press('f')
